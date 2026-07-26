@@ -1,3 +1,10 @@
+/* it passes all the tests but i still did not finish the part of it to list the directory from variable name
+like 
+folder=home
+ls/$folder
+suppose to list home 
+do not know how it passed the test */
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
