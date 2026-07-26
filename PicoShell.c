@@ -24,11 +24,11 @@ int main(int argc, char **argv)
             if (getcwd(buf, sizeof(buf)) != 0) {
                 printf("%s\n", buf);
             } else {
-                printf("pwd: error getting directory\n");
+                printf("pwd error\n");
             }
         } else if (strncmp(buf, "cd ", 2) == 0) {
             if (chdir(buf + 3) != 0) {
-                printf("cd: cannot change directory\n");
+                printf("cannot change directory\n");
             }
         } else if (strcmp(buf, "exit") == 0) {
             printf("Good Bye :)\n");
