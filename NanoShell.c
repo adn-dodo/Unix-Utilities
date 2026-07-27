@@ -5,8 +5,6 @@ ls/$x
 suppose to list home
 */
 
-
-
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -85,15 +83,7 @@ int main(int argc, char **argv)
                 for (int i = 0; environ[i] != NULL; i++) {
                     printf("%s\n", environ[i]);
                 }
-            } else {
-                char var[500];
-                strcpy(var, buf + 9);
-                for (int i = 0; environ[i] != NULL; i++) {
-                    if (strncmp(environ[i], var, strlen(var)) == 0) {
-                        printf("%s\n", environ[i]);
-                    }
-                }
-            }
+            } 
         } else if (strncmp(buf, "echo ", 5) == 0) {
             printf("%s\n", buf + 5);
         } else if (strcmp(buf, "pwd") == 0) {
