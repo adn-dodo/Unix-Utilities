@@ -3,6 +3,10 @@ it passed all tests but i still did not implement the list from variable name li
 x=home
 ls/$x
 suppose to list home
+
+will be working on it today 
+i will update when finished
+ان شاء الله
 */
 
 #include <stdio.h>
