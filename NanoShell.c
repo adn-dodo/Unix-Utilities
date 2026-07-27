@@ -4,7 +4,6 @@ x=home
 ls/$x
 suppose to list home
 
-will be working on it today 
 i will update when finished
 ان شاء الله
 */
