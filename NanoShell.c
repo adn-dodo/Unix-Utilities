@@ -1,13 +1,3 @@
-/*
-it passed all tests but i still did not implement the list from variable name like
-x=home
-ls/$x
-suppose to list home
-
-i will update when finished
-ان شاء الله
-*/
-
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -56,18 +46,56 @@ int main(int argc, char **argv)
             }
             if (space || space_before) {
                 printf("Invalid command\n");
-                var_count++;
             } else {
-                printf("name: %s, value: %s\n", vars.names[var_count],
-                       vars.values[var_count]);
-                var_count++;
+                int found = -1;
+                for (int k = 0; k < var_count; k++) {
+                    if (strcmp(vars.names[k], vars.names[var_count]) == 0) {
+                        found = k;
+                        break;
+                    }
+                }
+                
+                if (found != -1) {
+                    strcpy(vars.values[found], vars.values[var_count]);
+                    printf("name: %s, value: %s\n", vars.names[found],
+                           vars.values[found]);
+                } else {
+                    printf("name: %s, value: %s\n", vars.names[var_count],
+                           vars.values[var_count]);
+                    var_count++;
+                }
             }
         } else if (buf[0] == '$') {
             for (int m = 0; m < var_count; m++) {
                 if (strcmp(vars.names[m], buf + 1) == 0) {
                     printf("%s\n", vars.values[m]);
-                    continue;
+                    break;  // ADDED: Stop after first match
                 }
+            }
+        } else if (strncmp(buf, "ls", 2) == 0) {
+            char cmd[count];
+            strcpy(cmd, buf);
+
+            for (int m = 0; m < var_count; m++) {
+                char search[600];
+                sprintf(search, "$%s", vars.names[m]);
+                char *pos = strstr(cmd, search);
+
+                if (pos != NULL) {
+                    char temp[count];
+                    int offset = pos - cmd;
+                    strncpy(temp, cmd, offset);
+                    temp[offset] = 0;
+                    strcat(temp, vars.values[m]);
+                    strcat(temp, pos + strlen(search));
+                    strcpy(cmd, temp);
+                }
+            }
+
+            if (strchr(cmd, '$') != NULL) {
+                printf("not there\n");
+            } else {
+                system(cmd);
             }
         } else if (strncmp(buf, "export ", 7) == 0) {
             char env_str[1000];
@@ -86,7 +114,7 @@ int main(int argc, char **argv)
                 for (int i = 0; environ[i] != NULL; i++) {
                     printf("%s\n", environ[i]);
                 }
-            } 
+            }
         } else if (strncmp(buf, "echo ", 5) == 0) {
             printf("%s\n", buf + 5);
         } else if (strcmp(buf, "pwd") == 0) {
