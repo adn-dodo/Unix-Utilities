@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <dirent.h>
 #define count 8000
 #define max_vars 100
 
@@ -47,6 +48,7 @@ int main(int argc, char **argv)
             if (space || space_before) {
                 printf("Invalid command\n");
             } else {
+                
                 int found = -1;
                 for (int k = 0; k < var_count; k++) {
                     if (strcmp(vars.names[k], vars.names[var_count]) == 0) {
@@ -56,10 +58,12 @@ int main(int argc, char **argv)
                 }
                 
                 if (found != -1) {
+                    
                     strcpy(vars.values[found], vars.values[var_count]);
                     printf("name: %s, value: %s\n", vars.names[found],
                            vars.values[found]);
                 } else {
+                    
                     printf("name: %s, value: %s\n", vars.names[var_count],
                            vars.values[var_count]);
                     var_count++;
@@ -69,13 +73,14 @@ int main(int argc, char **argv)
             for (int m = 0; m < var_count; m++) {
                 if (strcmp(vars.names[m], buf + 1) == 0) {
                     printf("%s\n", vars.values[m]);
-                    break;  // ADDED: Stop after first match
+                    break;  
                 }
             }
         } else if (strncmp(buf, "ls", 2) == 0) {
             char cmd[count];
             strcpy(cmd, buf);
 
+            
             for (int m = 0; m < var_count; m++) {
                 char search[600];
                 sprintf(search, "$%s", vars.names[m]);
@@ -95,7 +100,26 @@ int main(int argc, char **argv)
             if (strchr(cmd, '$') != NULL) {
                 printf("not there\n");
             } else {
-                system(cmd);
+                char path[500] = ".";
+                if (strlen(cmd) > 2) {
+                    if (cmd[2] == ' ') {
+                        strcpy(path, cmd + 3);
+                    }
+                }
+
+                
+                DIR *dir = opendir(path);
+                if (dir == NULL) {
+                    printf("ls: cannot access '%s': No such file or directory\n", path);
+                } else {
+                    struct dirent *entry;
+                    while ((entry = readdir(dir)) != NULL) {
+                        if (entry->d_name[0] != '.') {  
+                            printf("%s\n", entry->d_name);
+                        }
+                    }
+                    closedir(dir);
+                }
             }
         } else if (strncmp(buf, "export ", 7) == 0) {
             char env_str[1000];
